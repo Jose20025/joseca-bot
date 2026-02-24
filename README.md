@@ -1,53 +1,100 @@
 # Joseca Telegram Bot
 
-## Descripción
-
-Joseca Bot es un bot diseñado para interactuar con la API de Telegram, permitiendo a los usuarios realizar diversas acciones a través de comandos.
+Bot de Telegram desplegado en Cloudflare Workers con almacenamiento en D1 y respuestas de IA usando Groq.
 
 [¡Habla con el bot!](https://t.me/jose20025_bot)
 
-## Estructura del Proyecto
+## Comandos disponibles
 
-El proyecto está organizado de la siguiente manera:
+- `/start`: registra al usuario en D1 (si no existe) y envía mensaje de bienvenida.
+- `/8ball <pregunta>`: responde como “bola 8 mágica” usando `llama-3.1-8b-instant` vía Groq.
 
-```
-package.json
-pnpm-lock.yaml
-pnpm-workspace.yaml
-tsconfig.json
-vitest.config.mts
-worker-configuration.d.ts
-wrangler.jsonc
-src/
-	command-handler.ts
-	index.ts
-	interfaces/
-		telegram.d.ts
-test/
-	env.d.ts
-	index.spec.ts
-tscconfig.json
-```
+## Stack
 
-### Archivos Principales
+- Cloudflare Workers (`wrangler`)
+- Cloudflare D1
+- TypeScript
+- `groq-sdk`
+- Vitest
 
-- **src/index.ts**: Punto de entrada del bot.
-- **src/command-handler.ts**: Maneja los comandos enviados al bot.
-- **src/interfaces/telegram.d.ts**: Define las interfaces para la interacción con la API de Telegram.
-- **test/index.spec.ts**: Contiene las pruebas para el bot.
+## Requisitos
+
+- Node.js 20+
+- pnpm
+- Cuenta/configuración de Cloudflare
+- Bot token de Telegram
+- API key de Groq
 
 ## Instalación
-
-Para instalar las dependencias del proyecto, ejecuta:
 
 ```bash
 pnpm install
 ```
 
-## Uso
+## Configuración de variables
 
-Para ejecutar el bot, utiliza el siguiente comando:
+Este proyecto usa los bindings/variables:
+
+- `DB` (D1 binding, configurado en `wrangler.jsonc`)
+- `TELEGRAM_BOT_TOKEN`
+- `GROQ_API_KEY`
+
+Para desarrollo local, puedes usar `.dev.vars`:
+
+```env
+TELEGRAM_BOT_TOKEN=tu_token
+GROQ_API_KEY=tu_api_key
+```
+
+Para producción, configura secretos con Wrangler:
 
 ```bash
-pnpm start
+pnpm wrangler secret put TELEGRAM_BOT_TOKEN
+pnpm wrangler secret put GROQ_API_KEY
+```
+
+## Base de datos (D1)
+
+El bot espera una tabla `users` con las columnas:
+
+- `id`
+- `first_name`
+- `username`
+- `created_at`
+
+SQL sugerido:
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+	id INTEGER PRIMARY KEY,
+	first_name TEXT,
+	username TEXT,
+	created_at TEXT
+);
+```
+
+Ejemplo para ejecutar contra D1:
+
+```bash
+pnpm wrangler d1 execute <DB_NAME> --command "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, first_name TEXT, username TEXT, created_at TEXT);"
+```
+
+## Scripts
+
+- `pnpm dev`: levanta el worker en local
+- `pnpm start`: alias de `pnpm dev`
+- `pnpm test`: ejecuta pruebas
+- `pnpm deploy`: despliega a Cloudflare
+- `pnpm cf-typegen`: regenera tipos de bindings
+
+## Estructura principal
+
+```
+src/
+	index.ts
+	command-handler.ts
+	interfaces/
+		telegram.d.ts
+test/
+	index.spec.ts
 ```
