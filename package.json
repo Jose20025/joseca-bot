@@ -5,12 +5,17 @@
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
+		"dev:remote": "wrangler dev --remote",
 		"start": "wrangler dev",
+		"tg:webhook:get": "node scripts/telegram-webhook.mjs get",
+		"tg:webhook:set": "node scripts/telegram-webhook.mjs set",
+		"tg:webhook:delete": "node scripts/telegram-webhook.mjs delete",
 		"test": "vitest",
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"dotenv": "^17.3.1",
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
 		"wrangler": "^4.59.2"

@@ -82,10 +82,28 @@ pnpm wrangler d1 execute <DB_NAME> --command "CREATE TABLE IF NOT EXISTS users (
 ## Scripts
 
 - `pnpm dev`: levanta el worker en local
+- `pnpm dev:remote`: levanta el worker con URL pública temporal (ideal para webhook)
 - `pnpm start`: alias de `pnpm dev`
+- `pnpm tg:webhook:get`: consulta webhook actual del bot
+- `pnpm tg:webhook:set --url=https://<url_publica>`: actualiza webhook del bot
+- `pnpm tg:webhook:delete`: elimina webhook del bot
 - `pnpm test`: ejecuta pruebas
 - `pnpm deploy`: despliega a Cloudflare
 - `pnpm cf-typegen`: regenera tipos de bindings
+
+## Desarrollo sin afectar producción
+
+Si usas el mismo bot de Telegram para desarrollo y producción, solo puede existir **un webhook activo** y se pisarán entre sí.
+
+Flujo recomendado:
+
+1. Crea un segundo bot en `@BotFather` (bot de desarrollo).
+2. Guarda su token en `.dev.vars` como `TELEGRAM_BOT_TOKEN`.
+3. Ejecuta `pnpm dev:remote` y copia la URL HTTPS temporal.
+4. Ejecuta `pnpm tg:webhook:set --url=https://<url_temporal>`.
+5. Prueba únicamente contra el bot de desarrollo.
+
+De esta forma, el bot de producción nunca cambia de webhook y no afecta a otros usuarios.
 
 ## Estructura principal
 
