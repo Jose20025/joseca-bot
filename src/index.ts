@@ -29,7 +29,7 @@ export default {
 				const handler = new CommandHandler(
 					env.TELEGRAM_BOT_TOKEN,
 					env.DB,
-					env.GEMINI_API_KEY
+					env.GROQ_API_KEY,
 				);
 
 				switch (command) {
@@ -44,7 +44,7 @@ export default {
 
 						break;
 				}
-			})()
+			})(),
 		);
 
 		return new Response('Ok');

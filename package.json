@@ -1,6 +1,6 @@
 {
 	"name": "joseca-bot",
-	"version": "0.0.0",
+	"version": "1.2.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
@@ -16,6 +16,6 @@
 		"wrangler": "^4.59.2"
 	},
 	"dependencies": {
-		"@google/genai": "^1.36.0"
+		"groq-sdk": "^0.37.0"
 	}
 }
